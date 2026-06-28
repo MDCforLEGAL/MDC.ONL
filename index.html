@@ -6,43 +6,41 @@
     <title>MDC Executor • v1.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; }
+        .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
         
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
+        .fade-up {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .font-display {
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-            font-weight: 600;
+        .fade-up.show {
+            opacity: 1;
+            transform: translateY(0);
         }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        
+        .modal {
+            animation: modalPop 0.2s ease forwards;
         }
-
-        .section-header {
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-
-        .feature-card {
-            transition: all 0.3s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .nav-link {
-            transition: color 0.2s ease;
-        }
-        .nav-link:hover {
-            color: #3b82f6;
+        
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body class="bg-[#0a0a0a] text-zinc-200">
+
+    <!-- INTRO -->
+    <div id="intro" style="position:fixed; inset:0; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; transition: opacity 0.6s ease;">
+        <img id="logo" src="https://raw.githubusercontent.com/MDCforLEGAL/MDC.ONL/main/1000113152.png" 
+             style="width:200px; height:200px; transition: all 1.2s cubic-bezier(0.23,1,0.32,1);">
+        <div id="logo-text" style="font-size:42px; font-weight:700; letter-spacing:-3px; color:white; margin-top:16px; opacity:0; transform:translateX(40px); transition: all 1.2s cubic-bezier(0.23,1,0.32,1);">
+            MDC EXECUTOR
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur-xl">
         <div class="max-w-screen-2xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -52,183 +50,240 @@
                 </div>
                 <span class="font-display text-2xl font-semibold tracking-tighter">Executor</span>
             </div>
-
-            <div class="flex items-center gap-x-8 text-sm">
-                <a href="#features" class="nav-link text-zinc-400 hover:text-white">Features</a>
-                <a href="#how" class="nav-link text-zinc-400 hover:text-white">How it works</a>
-                <a href="#social" class="nav-link text-zinc-400 hover:text-white">Social</a>
+            <div class="hidden md:flex items-center gap-x-8 text-sm">
+                <a href="#features" class="text-zinc-400 hover:text-white">Features</a>
+                <a href="#how" class="text-zinc-400 hover:text-white">How it works</a>
+                <a href="#social" class="text-zinc-400 hover:text-white">Social</a>
             </div>
-
-            <div>
-                <a href="#download" 
-                   class="px-6 py-2.5 bg-white text-zinc-900 rounded-3xl text-sm font-semibold active:scale-95">
-                    Download
-                </a>
-            </div>
+            <button onclick="showDownloadModal()" class="px-5 py-2 bg-white text-zinc-900 rounded-3xl text-sm font-semibold active:scale-[0.985]">Download</button>
         </div>
     </nav>
 
     <!-- Hero -->
-    <div class="pt-24 pb-16 px-6 text-center max-w-4xl mx-auto">
+    <div class="pt-20 md:pt-24 pb-14 px-6 text-center max-w-4xl mx-auto">
         <div class="inline-flex items-center gap-x-2 bg-white/5 border border-white/10 rounded-full px-4 py-1 mb-6 text-sm">
             <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
             <span class="text-emerald-400">v1.0 Early Access</span>
         </div>
-
-        <h1 class="text-7xl font-display tracking-tighter font-semibold leading-none mb-6">
-            MDC Executor<br>
-            <span class="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Reimagined.</span>
+        <h1 class="text-6xl md:text-7xl font-display tracking-tighter font-semibold leading-none mb-6">
+            MDC Executor
         </h1>
-        
-        <p class="text-xl text-zinc-400 max-w-md mx-auto mb-10">
+        <p class="text-lg md:text-xl text-zinc-400 max-w-md mx-auto mb-10">
             Modern, clean and powerful Roblox Lua script executor.
         </p>
-
-        <div class="flex items-center justify-center gap-x-4">
-            <a href="#download" 
-               class="px-8 py-4 bg-white text-zinc-900 rounded-3xl font-semibold text-lg active:scale-95 flex items-center gap-x-2">
-                Download v1.0
-            </a>
-            <a href="#how" 
-               class="px-8 py-4 border border-white/20 hover:bg-white/5 rounded-3xl font-semibold text-lg active:scale-95">
-                Learn more
-            </a>
+        <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+            <button onclick="showDownloadModal()" class="w-full md:w-auto px-8 py-4 bg-white text-zinc-900 rounded-3xl font-semibold text-lg active:scale-[0.985]">Download v1.0</button>
+            <button onclick="showTab('security')" class="w-full md:w-auto px-8 py-4 border border-white/20 hover:bg-white/5 rounded-3xl font-semibold text-lg active:scale-[0.985]">Learn more</button>
         </div>
     </div>
 
     <!-- Features -->
-    <div id="features" class="max-w-screen-2xl mx-auto px-6 py-16">
-        <div class="text-center mb-12">
+    <div id="features" class="max-w-screen-2xl mx-auto px-6 py-14">
+        <div class="text-center mb-10">
             <div class="section-header text-blue-400 mb-3">WHY MDC EXECUTOR</div>
-            <h2 class="text-4xl font-semibold tracking-tight">Built for performance.<br>Designed for simplicity.</h2>
+            <h2 class="text-3xl md:text-4xl font-semibold tracking-tight">Built for performance.<br>Designed for simplicity.</h2>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="feature-card glass border border-white/10 rounded-3xl p-8">
-                <div class="w-12 h-12 bg-blue-600/20 text-blue-400 rounded-2xl flex items-center justify-center mb-6">
-                    <span class="text-3xl">⚡</span>
-                </div>
-                <div class="font-semibold text-xl mb-3">Lightning Fast</div>
+            <div class="feature-card glass border border-white/10 rounded-3xl p-8 fade-up">
+                <div class="text-3xl mb-4">⚡</div>
+                <div class="font-semibold text-xl mb-2">Lightning Fast</div>
                 <div class="text-zinc-400">Optimized execution engine with minimal overhead.</div>
             </div>
-
-            <div class="feature-card glass border border-white/10 rounded-3xl p-8">
-                <div class="w-12 h-12 bg-blue-600/20 text-blue-400 rounded-2xl flex items-center justify-center mb-6">
-                    <span class="text-3xl">🛡️</span>
-                </div>
-                <div class="font-semibold text-xl mb-3">Stable & Secure</div>
+            <div class="feature-card glass border border-white/10 rounded-3xl p-8 fade-up">
+                <div class="text-3xl mb-4">🛡️</div>
+                <div class="font-semibold text-xl mb-2">Stable & Secure</div>
                 <div class="text-zinc-400">Built with stability and user safety in mind.</div>
             </div>
-
-            <div class="feature-card glass border border-white/10 rounded-3xl p-8">
-                <div class="w-12 h-12 bg-blue-600/20 text-blue-400 rounded-2xl flex items-center justify-center mb-6">
-                    <span class="text-3xl">🎨</span>
-                </div>
-                <div class="font-semibold text-xl mb-3">Modern Interface</div>
+            <div class="feature-card glass border border-white/10 rounded-3xl p-8 fade-up">
+                <div class="text-3xl mb-4">🎨</div>
+                <div class="font-semibold text-xl mb-2">Modern Interface</div>
                 <div class="text-zinc-400">Clean glassmorphism design with smooth animations.</div>
             </div>
         </div>
     </div>
 
     <!-- How it works -->
-    <div id="how" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10">
-        <div class="max-w-2xl mx-auto text-center">
-            <div class="section-header text-blue-400 mb-3">HOW IT WORKS</div>
-            <h2 class="text-4xl font-semibold tracking-tight mb-10">Simple. Fast. Powerful.</h2>
-
-            <div class="space-y-8 text-left">
-                <div class="flex gap-6">
-                    <div class="w-8 h-8 bg-blue-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 font-bold">1</div>
-                    <div>
-                        <div class="font-semibold text-lg">Download & Install</div>
-                        <div class="text-zinc-400 mt-1">Get the latest version of MDC Executor.</div>
-                    </div>
-                </div>
-                <div class="flex gap-6">
-                    <div class="w-8 h-8 bg-blue-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 font-bold">2</div>
-                    <div>
-                        <div class="font-semibold text-lg">Enable Auto Inject</div>
-                        <div class="text-zinc-400 mt-1">Turn on Auto Inject for seamless script execution.</div>
-                    </div>
-                </div>
-                <div class="flex gap-6">
-                    <div class="w-8 h-8 bg-blue-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 font-bold">3</div>
-                    <div>
-                        <div class="font-semibold text-lg">Write or Import Scripts</div>
-                        <div class="text-zinc-400 mt-1">Use the built-in editor or import from Scriptblox.</div>
-                    </div>
-                </div>
-                <div class="flex gap-6">
-                    <div class="w-8 h-8 bg-blue-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 font-bold">4</div>
-                    <div>
-                        <div class="font-semibold text-lg">Execute</div>
-                        <div class="text-zinc-400 mt-1">Click Execute and watch your scripts run instantly.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Download Section -->
-    <div id="download" class="max-w-screen-2xl mx-auto px-6 py-20 border-t border-white/10">
-        <div class="max-w-xl mx-auto text-center">
-            <h2 class="text-4xl font-semibold tracking-tight mb-4">Ready to get started?</h2>
-            <p class="text-zinc-400 mb-8">MDC Executor v1.0 Early Access is now available.</p>
-
-            <button onclick="showComingSoon()"
-                    class="px-10 py-4 bg-white text-zinc-900 rounded-3xl font-semibold text-lg active:scale-95">
-                Download v1.0 (Coming Soon)
-            </button>
-
-            <div class="mt-6 text-xs text-zinc-500">
-                Windows 10/11 • 64-bit
+    <div id="how" class="max-w-screen-2xl mx-auto px-6 py-14 border-t border-white/10">
+        <div class="max-w-2xl mx-auto">
+            <div class="section-header text-blue-400 mb-3 text-center">HOW IT WORKS</div>
+            <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-center mb-10">Simple. Fast. Powerful.</h2>
+            <div class="space-y-5">
+                <div class="flex gap-4 fade-up"><div class="font-bold">1.</div> <div><b>Download & Install</b><br>Get the latest version.</div></div>
+                <div class="flex gap-4 fade-up"><div class="font-bold">2.</div> <div><b>Enable Auto Inject</b><br>Turn it on for seamless execution.</div></div>
+                <div class="flex gap-4 fade-up"><div class="font-bold">3.</div> <div><b>Write or Import Scripts</b><br>Use the editor or import from Scriptblox.</div></div>
+                <div class="flex gap-4 fade-up"><div class="font-bold">4.</div> <div><b>Execute</b><br>Click Execute and run instantly.</div></div>
             </div>
         </div>
     </div>
 
     <!-- Social -->
-    <div id="social" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10">
-        <div class="text-center mb-10">
-            <div class="section-header text-blue-400 mb-3">CONNECT WITH US</div>
+    <div id="social" class="max-w-screen-2xl mx-auto px-6 py-14 border-t border-white/10">
+        <div class="text-center mb-8">
+            <div class="section-header text-blue-400 mb-2">CONNECT WITH US</div>
             <h2 class="text-3xl font-semibold tracking-tight">Stay updated</h2>
         </div>
-
         <div class="flex flex-wrap justify-center gap-4">
-            <a href="https://youtube.com/@mdchubscript" target="_blank"
-               class="flex items-center gap-x-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-95">
-                <span class="text-red-500">▶</span>
-                <span class="font-medium">YouTube</span>
-            </a>
-
-            <a href="https://www.instagram.com/mdchubscripts" target="_blank"
-               class="flex items-center gap-x-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-95">
-                <span class="text-pink-500">📷</span>
-                <span class="font-medium">Instagram</span>
-            </a>
-
-            <a href="https://mdcblox.github.io/mdchub/" target="_blank"
-               class="flex items-center gap-x-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-95">
-                <span>🌐</span>
-                <span class="font-medium">Website</span>
-            </a>
-
-            <a href="https://discord.gg/2EdGWrb5zZ" target="_blank"
-               class="flex items-center gap-x-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-95">
-                <span class="text-[#5865F2]">💬</span>
-                <span class="font-medium">Discord</span>
-            </a>
+            <a href="https://youtube.com/@mdchubscript" target="_blank" class="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-[0.985]">YouTube</a>
+            <a href="https://www.instagram.com/mdchubscripts" target="_blank" class="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-[0.985]">Instagram</a>
+            <a href="https://mdcblox.github.io/mdchub/" target="_blank" class="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-[0.985]">Website</a>
+            <a href="https://discord.gg/2EdGWrb5zZ" target="_blank" class="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl active:scale-[0.985]">Discord</a>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="border-t border-white/10 py-8 text-center text-xs text-zinc-500">
+    <div class="text-center text-xs text-zinc-500 py-8 border-t border-white/10">
         © 2026 MDCHUB. All rights reserved.
     </div>
 
+    <!-- DOWNLOAD MODAL -->
+    <div id="download-modal" onclick="closeDownloadModal()" class="hidden fixed inset-0 bg-black/80 z-[999] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass border border-white/20 w-full max-w-md rounded-3xl p-8 modal">
+            <h2 class="text-2xl font-semibold mb-2">Choose Download Method</h2>
+            <p class="text-zinc-400 mb-6 text-sm">Please complete one of the tasks below to download.</p>
+            
+            <div class="space-y-3">
+                <a href="https://direct-link.net/1451613/tA9NXFPoJcF8" target="_blank"
+                   class="block w-full py-3.5 bg-white/10 hover:bg-white/20 font-semibold rounded-2xl text-center active:scale-[0.985] border-2 border-red-500 relative">
+                    Download via Linkvertise
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">RECOMMENDED</span>
+                </a>
+
+                <a href="https://work.ink/2uxV/5aa100d7-0136-45b9-ac32-321f08cbd507" target="_blank"
+                   class="block w-full py-3.5 bg-white/10 hover:bg-white/20 font-semibold rounded-2xl text-center active:scale-[0.985]">
+                    Download via Work.ink
+                </a>
+
+                <div class="block w-full py-3.5 bg-zinc-800 text-zinc-400 font-semibold rounded-2xl text-center cursor-not-allowed">
+                    Download via Lootlabs <span class="text-xs">(Bakımda)</span>
+                </div>
+            </div>
+            
+            <button onclick="closeDownloadModal()" class="mt-6 w-full text-sm text-zinc-400 hover:text-white">Cancel</button>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div id="tabs" onclick="if (event.target.id === 'tabs') closeTabs()" class="hidden fixed inset-0 bg-black/80 z-[999] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass border border-white/20 w-full max-w-4xl max-h-[85vh] rounded-3xl overflow-hidden modal">
+            <div class="flex border-b border-white/10 bg-zinc-900">
+                <button onclick="showTab('security')" id="tab-security" class="tab flex-1 py-4 text-sm font-semibold">Security</button>
+                <button onclick="showTab('versions')" id="tab-versions" class="tab flex-1 py-4 text-sm font-semibold">Versions</button>
+                <button onclick="showTab('opensource')" id="tab-opensource" class="tab flex-1 py-4 text-sm font-semibold">Open Source</button>
+                <button onclick="closeTabs()" class="px-6 text-xl">×</button>
+            </div>
+
+            <div id="content-security" class="p-8 overflow-auto max-h-[65vh]">
+                <h2 class="text-3xl font-semibold mb-6">Security Information</h2>
+                <div class="space-y-6 text-zinc-300">
+                    <div><h3 class="font-semibold text-lg mb-2">Is MDC Executor Safe?</h3><p>MDC Executor is designed with user safety as the top priority.</p></div>
+                    <div><h3 class="font-semibold text-lg mb-2">No Malware or Backdoors</h3><p>We guarantee that MDC Executor does not contain any malware or backdoors.</p></div>
+                    <div><h3 class="font-semibold text-lg mb-2">Report a Security Issue</h3><p>If you find any issue, please report it on our Discord.</p></div>
+                </div>
+            </div>
+
+            <div id="content-versions" class="hidden p-8 overflow-auto max-h-[65vh]">
+                <h2 class="text-3xl font-semibold mb-6">Versions</h2>
+                <div class="space-y-4">
+                    <div class="glass border border-white/10 p-5 rounded-2xl">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-semibold">v1.0 (Early Access)</div>
+                                <div class="text-sm text-zinc-400">Latest • Recommended</div>
+                            </div>
+                            <button onclick="showDownloadModal()" class="px-6 py-2 bg-white text-zinc-900 rounded-2xl text-sm font-semibold active:scale-[0.985]">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-opensource" class="hidden p-8 overflow-auto max-h-[65vh]">
+                <h2 class="text-3xl font-semibold mb-6">Video Executor - Open Source</h2>
+                <div class="space-y-6 text-zinc-300">
+                    <p>Video Executor will be fully open source for full transparency.</p>
+                    <div>
+                        <h3 class="font-semibold mb-2">Why Open Source?</h3>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Full transparency</li>
+                            <li>Community can verify there are no backdoors</li>
+                            <li>Anyone can contribute</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function showComingSoon() {
-            alert('MDC Executor v1.0 will be available for download soon!\nStay tuned on our Discord and YouTube.');
+        // Intro Animation (Optimize Edilmiş)
+        window.onload = function() {
+            const intro = document.getElementById('intro');
+            const logo = document.getElementById('logo');
+            const logoText = document.getElementById('logo-text');
+
+            const audio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+            audio.volume = 0.55;
+
+            setTimeout(() => {
+                logo.style.transform = 'scale(1)';
+            }, 180);
+
+            setTimeout(() => {
+                audio.play().catch(() => {});
+                logo.style.transform = 'translateX(-70px)';
+                logoText.style.opacity = '1';
+                logoText.style.transform = 'translateX(0)';
+            }, 1400);
+
+            setTimeout(() => {
+                intro.style.transition = 'opacity 0.7s ease';
+                intro.style.opacity = '0';
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                }, 700);
+            }, 3600);
+
+            // Fade-up animasyonları
+            const cards = document.querySelectorAll('.fade-up');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                    }
+                });
+            }, { threshold: 0.15 });
+            cards.forEach(card => observer.observe(card));
+        }
+
+        function showTab(tab) {
+            const tabs = document.getElementById('tabs');
+            tabs.classList.remove('hidden');
+            tabs.classList.add('flex');
+
+            document.getElementById('content-security').classList.add('hidden');
+            document.getElementById('content-versions').classList.add('hidden');
+            document.getElementById('content-opensource').classList.add('hidden');
+
+            if (tab === 'security') document.getElementById('content-security').classList.remove('hidden');
+            if (tab === 'versions') document.getElementById('content-versions').classList.remove('hidden');
+            if (tab === 'opensource') document.getElementById('content-opensource').classList.remove('hidden');
+        }
+
+        function closeTabs() {
+            const tabs = document.getElementById('tabs');
+            tabs.classList.remove('flex');
+            tabs.classList.add('hidden');
+        }
+
+        function showDownloadModal() {
+            const modal = document.getElementById('download-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDownloadModal() {
+            const modal = document.getElementById('download-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
         }
     </script>
 </body>
-                  </html>
+</html>
